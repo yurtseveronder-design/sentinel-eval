@@ -93,3 +93,8 @@ def test_cli_passes_then_detects_regression(server, tmp_path):
 
 def test_cli_fails_on_unreachable(tmp_path):
     assert cli.main(["--url", "http://127.0.0.1:1", "--out", str(tmp_path)]) == 1
+
+
+def test_missing_dataset_fails_loudly(tmp_path, capsys):
+    assert cli.main(["--dataset", str(tmp_path / "nope.jsonl"), "--out", str(tmp_path)]) == 2
+    assert "dataset not found" in capsys.readouterr().err
