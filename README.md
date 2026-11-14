@@ -38,6 +38,10 @@ sentinel-eval --target gateway   # whole stack via sentinel-ui (UI_URL, UI_API_K
 
 Writes `reports/<target>.json` and `.md`, and lists every missed attack and wrongly blocked prompt by id.
 
+## Results
+
+See [RESULTS.md](RESULTS.md) for the latest dated numbers by configuration (blind-set catch rates from 10% to 73%, depending on engine and threshold).
+
 ## Regression gate
 
 `baseline.json` holds the accepted catch and false-block rates. CI fails if the catch rate drops, or the
