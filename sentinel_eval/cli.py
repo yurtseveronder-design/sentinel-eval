@@ -44,7 +44,12 @@ def main(argv=None):
         key = args.api_key or os.getenv("UI_API_KEY", "ui-test-key")
         target = targets.GatewayTarget(url, key)
 
-    m = metrics.compute(run(dataset.load(args.dataset), target))
+    try:
+        samples = dataset.load(args.dataset)
+    except FileNotFoundError:
+        print(f"error: dataset not found: {args.dataset}. Install with 'pip install -e .' from a checkout, or pass --dataset FILE.", file=sys.stderr)
+        return 2
+    m = metrics.compute(run(samples, target))
     baseline = json.loads(Path(args.baseline).read_text()) if args.baseline and Path(args.baseline).exists() else None
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
