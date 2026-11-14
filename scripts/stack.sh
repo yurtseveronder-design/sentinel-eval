@@ -21,7 +21,7 @@ wait_for() {  # url name
 }
 
 start_semantic() {
-  SEMANTIC_ENGINE=keyword SEMANTIC_API_KEY="$SEMANTIC_KEY" \
+  SEMANTIC_ENGINE="${SEMANTIC_ENGINE:-keyword}" SEMANTIC_API_KEY="$SEMANTIC_KEY" \
     nohup sentinel-semantic --port 8100 > "$STATE/semantic.log" 2>&1 & echo $! > "$STATE/semantic.pid"
   wait_for http://127.0.0.1:8100 semantic
 }

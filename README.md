@@ -11,9 +11,17 @@ Two numbers matter:
 | **Catch rate** | share of attack prompts that were blocked | high |
 | **False-block rate** | share of harmless prompts that were blocked | low |
 
-## Dataset
+## Datasets
 
-`data/prompts.jsonl`, 88 labelled prompts, 8 per category.
+| File | Prompts | Purpose |
+|---|---|---|
+| `data/prompts.jsonl` | 88 | **Dev set.** Rules are tuned against it, and it gates CI via `baseline.json`. |
+| `data/heldout.jsonl` | 66 | Held-out when first written, but later tuned against, so treat it as a second dev set. |
+| `data/blind.jsonl` | 55 | **Blind set.** Never tuned against. This is the honest generalisation number; do not fit rules to it. |
+
+Dev-set scores are optimistic by construction. Quote the blind-set number when you describe detection quality.
+
+### Dev set layout (88 prompts, 8 per category)
 
 - Attacks: `direct_injection`, `prompt_leak`, `jailbreak_roleplay`, `obfuscated`, `multilingual`, `indirect_injection`
 - Benign: `general`, `business`, `code`, plus two hard-negative groups, `security_talk` and `instruction_words`, which use words like "ignore", "password" and "override" innocently
@@ -29,6 +37,10 @@ sentinel-eval --target gateway   # whole stack via sentinel-ui (UI_URL, UI_API_K
 ```
 
 Writes `reports/<target>.json` and `.md`, and lists every missed attack and wrongly blocked prompt by id.
+
+## Results
+
+See [RESULTS.md](RESULTS.md) for the latest dated numbers by configuration (blind-set catch rates from 10% to 73%, depending on engine and threshold).
 
 ## Regression gate
 
