@@ -1,0 +1,16 @@
+[project]
+name = "sentinel-eval"
+version = "0.1.0"
+description = "Benchmark for the Sentinel guardrail stack: catch rate and false-block rate"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+sentinel-eval = "sentinel_eval.cli:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["sentinel_eval"]
