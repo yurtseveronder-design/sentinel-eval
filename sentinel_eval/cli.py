@@ -49,7 +49,7 @@ def main(argv=None):
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     (out / f"{target.name}.json").write_text(json.dumps(m, indent=2))
-    text = report.markdown(target.name, m, baseline)
+    text = report.markdown(f"{target.name} / {Path(args.dataset).stem}", m, baseline)
     (out / f"{target.name}.md").write_text(text)
     print(text)
     if args.write_baseline:
