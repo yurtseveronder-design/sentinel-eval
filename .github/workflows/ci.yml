@@ -64,14 +64,14 @@ jobs:
       - name: Dev set (gated against baseline.json, keyword engine only)
         run: |
           args="--out reports/dev"
-          [ "${{ matrix.engine }}" = keyword ] && args="$args --baseline baseline.json"
+          [ "${{ matrix.name }}" = keyword ] && args="$args --baseline baseline.json"
           sentinel-eval --target scan --dataset data/prompts.jsonl $args | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Held-out set (report only; the rules were tuned against it)
         run: sentinel-eval --target scan --dataset data/heldout.jsonl --out reports/heldout --max-errors 0 | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Blind set (report only; never tuned against)
         run: sentinel-eval --target scan --dataset data/blind.jsonl --out reports/blind | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Whole stack via sentinel-ui (keyword run only)
-        if: matrix.engine == 'keyword'
+        if: matrix.name == 'keyword'
         run: sentinel-eval --target gateway --out reports/gateway | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
