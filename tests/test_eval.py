@@ -80,6 +80,8 @@ def test_metrics_rates_and_errors():
     assert (m["catch_rate"], m["false_block_rate"], m["errors"]) == (0.5, 0.5, 1)
     assert m["missed"] == ["2"] and m["false_blocks"] == ["3"]
     assert "50.0%" in report.markdown("t", m)
+    page = report.html("t<x>", m)
+    assert "50.0%" in page and "t&lt;x&gt;" in page and "<script" not in page
 
 
 def test_cli_passes_then_detects_regression(server, tmp_path):
