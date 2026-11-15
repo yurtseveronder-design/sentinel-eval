@@ -24,6 +24,9 @@ jobs:
           - {name: embedding-0.50, engine: embedding, threshold: "0.50", model: "paraphrase-multilingual-MiniLM-L12-v2"}
           - {name: embedding-0.60, engine: embedding, threshold: "0.60", model: "paraphrase-multilingual-MiniLM-L12-v2"}
           - {name: embedding-0.70, engine: embedding, threshold: "0.70", model: "paraphrase-multilingual-MiniLM-L12-v2"}
+          - {name: classifier-0.50, engine: keyword, threshold: "0.60", model: "all-MiniLM-L6-v2", classifier: "protectai/deberta-v3-base-prompt-injection-v2", classifier_threshold: "0.50"}
+          - {name: classifier-0.90, engine: keyword, threshold: "0.60", model: "all-MiniLM-L6-v2", classifier: "protectai/deberta-v3-base-prompt-injection-v2", classifier_threshold: "0.90"}
+          - {name: classifier-0.50+embedding-0.60, engine: embedding, threshold: "0.60", model: "paraphrase-multilingual-MiniLM-L12-v2", classifier: "protectai/deberta-v3-base-prompt-injection-v2", classifier_threshold: "0.50"}
     name: benchmark (${{ matrix.name }})
     defaults:
       run:
@@ -41,9 +44,9 @@ jobs:
       - name: Install the stack
         run: |
           pip install -e .sut/ai-sentinel
-          if [ "${{ matrix.engine }}" = embedding ]; then
+          if [ "${{ matrix.engine }}" = embedding ] || [ -n "${{ matrix.classifier }}" ]; then
             pip install --extra-index-url https://download.pytorch.org/whl/cpu torch
-            pip install -e ".sut/sentinel-semantic[embeddings]"
+            pip install -e ".sut/sentinel-semantic[embeddings,classifier]"
           else
             pip install -e .sut/sentinel-semantic
           fi
@@ -56,17 +59,19 @@ jobs:
           SEMANTIC_ENGINE: ${{ matrix.engine }}
           SEMANTIC_MODEL_NAME: ${{ matrix.model }}
           SEMANTIC_JAILBREAK_THRESHOLD: ${{ matrix.threshold }}
+          SEMANTIC_CLASSIFIER_MODEL: ${{ matrix.classifier }}
+          SEMANTIC_CLASSIFIER_THRESHOLD: ${{ matrix.classifier_threshold }}
       - name: Dev set (gated against baseline.json, keyword engine only)
         run: |
           args="--out reports/dev"
-          [ "${{ matrix.engine }}" = keyword ] && args="$args --baseline baseline.json"
+          [ "${{ matrix.name }}" = keyword ] && args="$args --baseline baseline.json"
           sentinel-eval --target scan --dataset data/prompts.jsonl $args | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Held-out set (report only; the rules were tuned against it)
         run: sentinel-eval --target scan --dataset data/heldout.jsonl --out reports/heldout --max-errors 0 | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Blind set (report only; never tuned against)
         run: sentinel-eval --target scan --dataset data/blind.jsonl --out reports/blind | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Whole stack via sentinel-ui (keyword run only)
-        if: matrix.engine == 'keyword'
+        if: matrix.name == 'keyword'
         run: sentinel-eval --target gateway --out reports/gateway | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
