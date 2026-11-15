@@ -56,6 +56,7 @@ def main(argv=None):
     (out / f"{target.name}.json").write_text(json.dumps(m, indent=2))
     text = report.markdown(f"{target.name} / {Path(args.dataset).stem}", m, baseline)
     (out / f"{target.name}.md").write_text(text)
+    (out / f"{target.name}.html").write_text(report.html(f"{target.name} / {Path(args.dataset).stem}", m, baseline))
     print(text)
     if args.write_baseline:
         Path(args.write_baseline).write_text(json.dumps(
