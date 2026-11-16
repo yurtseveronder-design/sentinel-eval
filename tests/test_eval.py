@@ -100,3 +100,18 @@ def test_cli_fails_on_unreachable(tmp_path):
 def test_missing_dataset_fails_loudly(tmp_path, capsys):
     assert cli.main(["--dataset", str(tmp_path / "nope.jsonl"), "--out", str(tmp_path)]) == 2
     assert "dataset not found" in capsys.readouterr().err
+
+
+def test_latency_is_reported_and_html_shows_it():
+    S = dataset.Sample
+    results = [(S(str(i), "attack", "a", "x"), targets.Verdict(True, seconds=0.01 * (i + 1))) for i in range(10)]
+    m = metrics.compute(results)
+    assert m["latency"]["p50_ms"] == 60.0 and m["latency"]["p95_ms"] == 100.0
+    assert "median 60.0 ms" in report.markdown("t", m) and "60.0 ms" in report.html("t", m)
+    assert metrics.compute([(S("1", "attack", "a", "x"), targets.Verdict(True))])["latency"] is None
+
+
+def test_compare_maps_model_labels_to_attack_probability():
+    from sentinel_eval import compare
+    assert compare.attack_probability([{"label": "INJECTION", "score": 0.9}, {"label": "SAFE", "score": 0.1}]) == 0.9
+    assert abs(compare.attack_probability([{"label": "LEGIT", "score": 0.8}, {"label": "X", "score": 0.2}]) - 0.2) < 1e-9
