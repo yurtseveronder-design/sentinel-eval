@@ -7,6 +7,9 @@ def markdown(target, m, baseline=None):
              f"- Samples: {m['total']} ({m['attacks']} attacks, {m['benign']} benign), errors: {m['errors']}",
              f"- **Catch rate:** {_pct(m['catch_rate'])}",
              f"- **False-block rate:** {_pct(m['false_block_rate'])}"]
+    if m.get("latency"):
+        lat = m["latency"]
+        lines.append(f"- **Latency per request:** median {lat['p50_ms']} ms, p95 {lat['p95_ms']} ms (client-side, includes HTTP)")
     if baseline:
         lines.append(f"- Baseline: catch {_pct(baseline.get('catch_rate'))}, false-block {_pct(baseline.get('false_block_rate'))}")
     lines += ["", "| Category | Type | Blocked | Rate |", "|---|---|---|---|"]
@@ -41,6 +44,9 @@ def html(target, m, baseline=None):
                 f"false-block {_pct(baseline.get('false_block_rate'))}</p>")
     missed = ("<h2>Missed attacks</h2><p>" + ", ".join(map(escape, m["missed"])) + "</p>") if m["missed"] else ""
     fps = ("<h2>Wrongly blocked</h2><p>" + ", ".join(map(escape, m["false_blocks"])) + "</p>") if m["false_blocks"] else ""
+    lat = m.get("latency")
+    latency_card = (f'<div class="card"><b>{lat["p50_ms"]} ms</b>median latency (p95 {lat["p95_ms"]} ms)</div>'
+                    if lat else "")
     return f"""<!doctype html><html lang="en"><meta charset="utf-8"><title>Sentinel eval: {escape(target)}</title>
 <style>body{{font:15px system-ui;max-width:880px;margin:2rem auto;padding:0 1rem;color:#1b1b1b}}
 .cards{{display:flex;gap:1rem;flex-wrap:wrap}}.card{{flex:1;min-width:180px;border:1px solid #ddd;border-radius:8px;padding:1rem}}
@@ -51,6 +57,6 @@ td,th{{text-align:left;padding:.4rem;border-bottom:1px solid #eee}}.bar{{display
 <div class="cards">
 <div class="card"><b>{_pct(m['catch_rate'])}</b>attacks caught</div>
 <div class="card"><b>{_pct(m['false_block_rate'])}</b>benign wrongly blocked</div>
-<div class="card"><b>{m['total']}</b>samples ({m['attacks']} attacks, {m['benign']} benign, {m['errors']} errors)</div></div>
+{latency_card}<div class="card"><b>{m['total']}</b>samples ({m['attacks']} attacks, {m['benign']} benign, {m['errors']} errors)</div></div>
 {base}<table><tr><th>Category</th><th>Type</th><th>Blocked</th><th>Rate</th></tr>{rows}</table>{missed}{fps}</html>
 """

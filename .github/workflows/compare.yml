@@ -1,0 +1,34 @@
+name: compare
+# Manual: scores public prompt-injection models on the three sets, for the comparison table in docs/COMPARISON.md.
+on: workflow_dispatch
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        model:
+          - protectai/deberta-v3-base-prompt-injection-v2
+          - protectai/deberta-v3-base-prompt-injection
+          - deepset/deberta-v3-base-injection
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: |
+          pip install --extra-index-url https://download.pytorch.org/whl/cpu torch
+          pip install transformers sentencepiece protobuf -e .
+      - name: Score
+        run: |
+          mkdir -p reports
+          for set in prompts heldout blind; do
+            python -m sentinel_eval.compare --model "${{ matrix.model }}" --dataset data/$set.jsonl | tee -a reports/rows.jsonl | sed "s/^/$set: /" | tee -a "$GITHUB_STEP_SUMMARY"
+          done
+      - uses: actions/upload-artifact@v4
+        with: {name: "compare-${{ strategy.job-index }}", path: reports}
