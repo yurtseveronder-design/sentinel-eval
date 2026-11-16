@@ -16,7 +16,7 @@ UI_KEY="${UI_API_KEY:-ui-test-key}"
 mkdir -p "$STATE"
 
 wait_for() {  # url name
-  for _ in $(seq 1 40); do curl -sf "$1/health" >/dev/null && return 0; sleep 1; done
+  for _ in $(seq 1 180); do curl -sf "$1/health" >/dev/null && return 0; sleep 1; done
   echo "$2 did not become healthy; log:"; cat "$STATE/$2.log"; exit 1
 }
 
