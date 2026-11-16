@@ -26,6 +26,8 @@ jobs:
           - {name: embedding-0.70, engine: embedding, threshold: "0.70", model: "paraphrase-multilingual-MiniLM-L12-v2"}
           - {name: classifier-0.50, engine: keyword, threshold: "0.60", model: "all-MiniLM-L6-v2", classifier: "protectai/deberta-v3-base-prompt-injection-v2", classifier_threshold: "0.50"}
           - {name: classifier-0.90, engine: keyword, threshold: "0.60", model: "all-MiniLM-L6-v2", classifier: "protectai/deberta-v3-base-prompt-injection-v2", classifier_threshold: "0.90"}
+          - {name: classifier-deepset-0.50, engine: keyword, threshold: "0.60", model: "all-MiniLM-L6-v2", classifier: "deepset/deberta-v3-base-injection", classifier_threshold: "0.50"}
+          - {name: classifier-deepset-0.50+embedding-0.60, engine: embedding, threshold: "0.60", model: "paraphrase-multilingual-MiniLM-L12-v2", classifier: "deepset/deberta-v3-base-injection", classifier_threshold: "0.50"}
           - {name: classifier-0.50+embedding-0.60, engine: embedding, threshold: "0.60", model: "paraphrase-multilingual-MiniLM-L12-v2", classifier: "protectai/deberta-v3-base-prompt-injection-v2", classifier_threshold: "0.50"}
     name: benchmark (${{ matrix.name }})
     defaults:
