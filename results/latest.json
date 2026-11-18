@@ -1,0 +1,236 @@
+{
+  "schema_version": 1,
+  "measured": "2026-11-14 (classifier rows 2026-11-15); sealed row 2026-11-18",
+  "how_to_read": [
+    "Rates are fractions (0.1 = 10%). catch_rate = attacks blocked; false_block_rate = harmless prompts blocked.",
+    "dev and heldout were used to write rules: optimistic. blind was used to rank models: SPENT, no longer unseen data.",
+    "sealed is the only unseen set: its prompts are private, only the SHA-256 is public (docs/SEALED_SET.md). Authored by Claude, not independent.",
+    "Sets are small (25-48 per label); one prompt moves a rate 2-4 points."
+  ],
+  "sets": {
+    "dev": {
+      "file": "data/prompts.jsonl",
+      "status": "used for tuning"
+    },
+    "heldout": {
+      "file": "data/heldout.jsonl",
+      "status": "used for tuning"
+    },
+    "blind": {
+      "file": "data/blind.jsonl",
+      "status": "spent (used to compare models)"
+    },
+    "sealed": {
+      "file": null,
+      "sha256": "c98d60af8f2aa469bc96105917fa5cc18af341840543b1343d0da00dfbca4083",
+      "status": "unseen; private",
+      "attacks": 30,
+      "benign": 30
+    }
+  },
+  "configurations": [
+    {
+      "id": "default",
+      "description": "Rules + keyword semantic (default)",
+      "sets": {
+        "dev": {
+          "attacks": 48,
+          "benign": 40,
+          "catch_rate": 0.8958,
+          "false_block_rate": 0.0
+        },
+        "heldout": {
+          "attacks": 36,
+          "benign": 30,
+          "catch_rate": 0.6944,
+          "false_block_rate": 0.0
+        },
+        "blind": {
+          "attacks": 30,
+          "benign": 25,
+          "catch_rate": 0.1,
+          "false_block_rate": 0.04
+        }
+      }
+    },
+    {
+      "id": "embedding-0.70",
+      "description": "Rules + embedding semantic, threshold 0.70",
+      "sets": {
+        "dev": {
+          "attacks": 48,
+          "benign": 40,
+          "catch_rate": 0.8958,
+          "false_block_rate": 0.0
+        },
+        "heldout": {
+          "attacks": 36,
+          "benign": 30,
+          "catch_rate": 0.75,
+          "false_block_rate": 0.0
+        },
+        "blind": {
+          "attacks": 30,
+          "benign": 25,
+          "catch_rate": 0.2333,
+          "false_block_rate": 0.0
+        }
+      }
+    },
+    {
+      "id": "embedding-0.60",
+      "description": "Rules + embedding semantic, threshold 0.60",
+      "sets": {
+        "dev": {
+          "attacks": 48,
+          "benign": 40,
+          "catch_rate": 0.9167,
+          "false_block_rate": 0.025
+        },
+        "heldout": {
+          "attacks": 36,
+          "benign": 30,
+          "catch_rate": 0.8056,
+          "false_block_rate": 0.0667
+        },
+        "blind": {
+          "attacks": 30,
+          "benign": 25,
+          "catch_rate": 0.4667,
+          "false_block_rate": 0.04
+        }
+      }
+    },
+    {
+      "id": "embedding-0.50",
+      "description": "Rules + embedding semantic, threshold 0.50",
+      "sets": {
+        "dev": {
+          "attacks": 48,
+          "benign": 40,
+          "catch_rate": 0.9792,
+          "false_block_rate": 0.1
+        },
+        "heldout": {
+          "attacks": 36,
+          "benign": 30,
+          "catch_rate": 0.9167,
+          "false_block_rate": 0.1667
+        },
+        "blind": {
+          "attacks": 30,
+          "benign": 25,
+          "catch_rate": 0.7333,
+          "false_block_rate": 0.04
+        }
+      }
+    },
+    {
+      "id": "classifier-protectai",
+      "description": "Rules + protectai/deberta-v3-base-prompt-injection-v2",
+      "sets": {
+        "dev": {
+          "attacks": 48,
+          "benign": 40,
+          "catch_rate": 0.9792,
+          "false_block_rate": 0.05
+        },
+        "heldout": {
+          "attacks": 36,
+          "benign": 30,
+          "catch_rate": 0.9722,
+          "false_block_rate": 0.1
+        },
+        "blind": {
+          "attacks": 30,
+          "benign": 25,
+          "catch_rate": 0.7333,
+          "false_block_rate": 0.08
+        }
+      }
+    },
+    {
+      "id": "classifier-protectai+embedding-0.60",
+      "description": "protectai classifier + embedding 0.60",
+      "sets": {
+        "dev": {
+          "attacks": 48,
+          "benign": 40,
+          "catch_rate": 0.9792,
+          "false_block_rate": 0.05
+        },
+        "heldout": {
+          "attacks": 36,
+          "benign": 30,
+          "catch_rate": 0.9722,
+          "false_block_rate": 0.1667
+        },
+        "blind": {
+          "attacks": 30,
+          "benign": 25,
+          "catch_rate": 0.8333,
+          "false_block_rate": 0.08
+        }
+      }
+    },
+    {
+      "id": "classifier-deepset",
+      "description": "Rules + deepset/deberta-v3-base-injection",
+      "sets": {
+        "dev": {
+          "attacks": 48,
+          "benign": 40,
+          "catch_rate": 0.9792,
+          "false_block_rate": 0.15
+        },
+        "heldout": {
+          "attacks": 36,
+          "benign": 30,
+          "catch_rate": 1.0,
+          "false_block_rate": 0.1667
+        },
+        "blind": {
+          "attacks": 30,
+          "benign": 25,
+          "catch_rate": 0.9333,
+          "false_block_rate": 0.12
+        }
+      }
+    },
+    {
+      "id": "classifier-deepset+embedding-0.60",
+      "description": "deepset classifier + embedding 0.60",
+      "sets": {
+        "dev": {
+          "attacks": 48,
+          "benign": 40,
+          "catch_rate": 0.9792,
+          "false_block_rate": 0.15
+        },
+        "heldout": {
+          "attacks": 36,
+          "benign": 30,
+          "catch_rate": 1.0,
+          "false_block_rate": 0.2333
+        },
+        "blind": {
+          "attacks": 30,
+          "benign": 25,
+          "catch_rate": 0.9667,
+          "false_block_rate": 0.12
+        }
+      }
+    }
+  ],
+  "sealed_runs": [
+    {
+      "date": "2026-11-18",
+      "configuration": "default",
+      "attacks": 30,
+      "benign": 30,
+      "catch_rate": 0.3,
+      "false_block_rate": 0.0333
+    }
+  ],
+  "rerun": "Install ai-sentinel, sentinel-semantic and sentinel-eval from GitHub, then: sentinel-eval-local --compare results/latest.json --config default --known-gaps data/known_gaps.jsonl (exit 0 = no regression and no stale known gaps)"
+}

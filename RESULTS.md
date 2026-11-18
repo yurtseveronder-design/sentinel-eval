@@ -17,6 +17,8 @@ and sentinel-ui (`0346679`). Catch rate = attacks blocked; false-block rate = ha
 Embedding runs use `paraphrase-multilingual-MiniLM-L12-v2`. Through sentinel-ui the default configuration gives the same
 numbers as calling ai-sentinel directly (89.6% / 0.0% on the dev set).
 
+The same numbers as JSON: [results/latest.json](results/latest.json). Known failures: [data/known_gaps.jsonl](data/known_gaps.jsonl).
+
 Public models scored on their own, and latency, are in [docs/COMPARISON.md](docs/COMPARISON.md); method in [docs/METHODOLOGY.md](docs/METHODOLOGY.md).
 
 ## How to read this

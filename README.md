@@ -42,6 +42,30 @@ Writes `reports/<target>.json` and `.md`, and lists every missed attack and wron
 
 See [RESULTS.md](RESULTS.md) for the latest dated numbers by configuration (blind-set catch rates from 10% to 73%, depending on engine and threshold).
 
+## For agents and scripts
+
+Everything an AI needs to re-check a change is a file or one command:
+
+| Need | Where |
+|---|---|
+| Latest numbers, machine-readable | [`results/latest.json`](results/latest.json): every configuration on dev, held-out, blind, plus sealed runs. Says which sets are spent |
+| Re-evaluate after a rule or model change | `sentinel-eval-local` (in-process, no server, JSON on stdout) |
+| Known boundaries | [`data/known_gaps.jsonl`](data/known_gaps.jsonl): attacks the default stack misses and harmless prompts it blocks, each with `expect: "miss"` or `"false_block"` |
+
+```bash
+pip install "git+https://github.com/yurtseveronder-design/ai-sentinel.git" \
+            "git+https://github.com/yurtseveronder-design/sentinel-semantic.git" \
+            "git+https://github.com/yurtseveronder-design/sentinel-eval.git"
+
+sentinel-eval-local --compare results/latest.json --config default --known-gaps data/known_gaps.jsonl
+sentinel-eval-local --classifier deepset/deberta-v3-base-injection        # try a model (needs the semantic [classifier] extra)
+sentinel-eval-local --sealed /private/sealed.jsonl                         # aggregate numbers only, never which prompts missed
+```
+
+Exit code `0` means no regression beyond the tolerance (default 2 points) and no stale known gap. Exit `1` means either a rate got worse, or a known gap now passes: that is good news, but the list is **strict** (like an expected-failure test), so remove the fixed entries and update `results/latest.json`. Exit `2` means setup error.
+
+Rules for agents: tune against dev and held-out only; the blind set is spent and the sealed set must never be tuned against ([docs/SEALED_SET.md](docs/SEALED_SET.md)).
+
 ## Regression gate
 
 `baseline.json` holds the accepted catch and false-block rates. CI fails if the catch rate drops, or the
