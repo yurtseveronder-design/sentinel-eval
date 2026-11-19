@@ -68,3 +68,32 @@ def test_cli_exit_codes(fake_stack, capsys):
     assert local.main(["--known-gaps", str(ROOT / "data" / "known_gaps.jsonl")]) == 1
     out = json.loads(capsys.readouterr().out.split("\n}\n")[-2] + "\n}")
     assert out["known_gaps"]["fixed"]
+
+
+def test_http_target_against_a_stub_gateway(capsys):
+    import threading
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+    attacks = {s.text for p in local.SETS.values() for s in dataset.load(p) if s.label == "attack"}
+
+    class Stub(BaseHTTPRequestHandler):
+        def do_POST(self):
+            if self.headers.get("X-API-Key") != "k":
+                self.send_response(401); self.end_headers(); return
+            body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+            blocked = body["prompt"] in attacks
+            data = json.dumps({"status": "blocked" if blocked else "allowed", "action": "BLOCK" if blocked else "ALLOW", "risk_score": 1.0 if blocked else 0.0, "reasons": []}).encode()
+            self.send_response(200); self.send_header("Content-Length", str(len(data))); self.end_headers(); self.wfile.write(data)
+
+        def log_message(self, *a):
+            pass
+
+    server = HTTPServer(("127.0.0.1", 0), Stub)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    url = f"http://127.0.0.1:{server.server_port}"
+    assert local.main(["--url", url, "--api-key", "k"]) == 0
+    report = json.loads(capsys.readouterr().out)
+    assert report["sets"]["blind"]["catch_rate"] == 1.0 and report["sets"]["blind"]["false_block_rate"] == 0.0
+    assert local.main(["--url", url, "--api-key", "wrong"]) == 2          # wrong key aborts, never scored as "allowed"
+    server.shutdown()
+    assert local.main(["--url", url, "--api-key", "k"]) == 2              # unreachable gateway aborts too
