@@ -58,11 +58,12 @@ pip install "git+https://github.com/yurtseveronder-design/ai-sentinel.git" \
             "git+https://github.com/yurtseveronder-design/sentinel-eval.git"
 
 sentinel-eval-local --compare results/latest.json --config default --known-gaps data/known_gaps.jsonl
+sentinel-eval-local --url http://localhost:8000 --api-key demo --compare results/latest.json   # a RUNNING gateway; needs no other install
 sentinel-eval-local --classifier deepset/deberta-v3-base-injection        # try a model (needs the semantic [classifier] extra)
 sentinel-eval-local --sealed /private/sealed.jsonl                         # aggregate numbers only, never which prompts missed
 ```
 
-Exit code `0` means no regression beyond the tolerance (default 2 points) and no stale known gap. Exit `1` means either a rate got worse, or a known gap now passes: that is good news, but the list is **strict** (like an expected-failure test), so remove the fixed entries and update `results/latest.json`. Exit `2` means setup error.
+Exit code `0` means no regression beyond the tolerance (default 2 points) and no stale known gap. Exit `1` means either a rate got worse, or a known gap now passes: that is good news, but the list is **strict** (like an expected-failure test), so remove the fixed entries and update `results/latest.json`. Exit `2` means setup error (including a wrong key or an unreachable gateway with `--url`: those abort the run and are never scored as "allowed"). With `--url` the gateway's own configuration decides what is measured, so the numbers describe that instance.
 
 Rules for agents: tune against dev and held-out only; the blind set is spent and the sealed set must never be tuned against ([docs/SEALED_SET.md](docs/SEALED_SET.md)).
 
