@@ -9,9 +9,9 @@ and sentinel-ui (`0346679`). Catch rate = attacks blocked; false-block rate = ha
 | Rules + embedding semantic, threshold 0.70 | 89.6% / 0.0% | 75.0% / 0.0% | **23.3% / 0.0%** |
 | Rules + embedding semantic, threshold 0.60 | 91.7% / 2.5% | 80.6% / 6.7% | **46.7% / 4.0%** |
 | Rules + embedding semantic, threshold 0.50 | 97.9% / 10.0% | 91.7% / 16.7% | **73.3% / 4.0%** |
-| Rules + trained classifier (`protectai/deberta-v3-base-prompt-injection-v2`), threshold 0.50 or 0.90 | 97.9% / 5.0% | 97.2% / 10.0% | **73.3% / 8.0%** |
+| Rules + pretrained classifier (`protectai/deberta-v3-base-prompt-injection-v2`), threshold 0.50 or 0.90 | 97.9% / 5.0% | 97.2% / 10.0% | **73.3% / 8.0%** |
 | Rules + classifier 0.50 + embedding 0.60 | 97.9% / 5.0% | 97.2% / 16.7% | **83.3% / 8.0%** |
-| Rules + trained classifier (`deepset/deberta-v3-base-injection`), 0.50 | 97.9% / 15.0% | 100% / 16.7% | **93.3% / 12.0%** |
+| Rules + pretrained classifier (`deepset/deberta-v3-base-injection`), 0.50 | 97.9% / 15.0% | 100% / 16.7% | **93.3% / 12.0%** |
 | Rules + deepset classifier 0.50 + embedding 0.60 | 97.9% / 15.0% | 100% / 23.3% | **96.7% / 12.0%** |
 
 Embedding runs use `paraphrase-multilingual-MiniLM-L12-v2`. Through sentinel-ui the default configuration gives the same

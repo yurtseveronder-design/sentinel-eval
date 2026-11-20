@@ -12,7 +12,7 @@ The fix was to split the data into three sets with different rules about use:
 |---|---|---|
 | Dev (`prompts.jsonl`) | 88 | Free to tune against. Optimistic by construction. |
 | Held-out (`heldout.jsonl`) | 66 | Used once to check, then tuned against after the first look. Treat as optimistic too. |
-| **Blind** (`blind.jsonl`) | 55 | **Never tuned against.** The only figure that says how the system treats wording it has not seen. |
+| **Blind** (`blind.jsonl`) | 55 | **Was not tuned against when written, but is now used up** (it has been used to compare models). Indicative only; see the sealed set for unseen data. |
 
 On the blind set the rules-only default caught **10%** of attacks. That is the honest number, and it is the one the READMEs lead with.
 
