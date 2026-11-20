@@ -17,7 +17,7 @@ Two numbers matter:
 |---|---|---|
 | `data/prompts.jsonl` | 88 | **Dev set.** Rules are tuned against it, and it gates CI via `baseline.json`. |
 | `data/heldout.jsonl` | 66 | Held-out when first written, but later tuned against, so treat it as a second dev set. |
-| `data/blind.jsonl` | 55 | **Blind set.** Never tuned against. This is the honest generalisation number; do not fit rules to it. |
+| `data/blind.jsonl` | 55 | **Blind set.** Not used to write rules, but since used to compare models, so it is **used up**: indicative, no longer a result on unseen data. |
 
 Dev-set scores are optimistic by construction. Quote the blind-set number when you describe detection quality.
 
@@ -40,7 +40,7 @@ Writes `reports/<target>.json` and `.md`, and lists every missed attack and wron
 
 ## Results
 
-See [RESULTS.md](RESULTS.md) for the latest dated numbers by configuration (blind-set catch rates from 10% to 73%, depending on engine and threshold).
+See [RESULTS.md](RESULTS.md) for the latest dated numbers by configuration (blind-set catch rates from 10% to 97%, depending on engine, model and threshold; the blind set is used up).
 
 ## For agents and scripts
 

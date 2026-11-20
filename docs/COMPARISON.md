@@ -1,7 +1,7 @@
 # Comparison with public prompt-injection models
 
 Measured 2026-11-16 with `sentinel_eval.compare` (workflow `compare`) and the `benchmark` CI job, on the same three files. Threshold 0.5. CPU, GitHub-hosted runner.
-Blind = 30 attacks + 25 harmless prompts, never tuned against.
+Blind = 30 attacks + 25 harmless prompts, not tuned against when written but now used up (used to compare these models).
 
 ## The detector alone (public model, no Sentinel rules)
 
