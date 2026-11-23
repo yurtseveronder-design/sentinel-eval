@@ -14,7 +14,7 @@ The fix was to split the data into three sets with different rules about use:
 | Held-out (`heldout.jsonl`) | 66 | Used once to check, then tuned against after the first look. Treat as optimistic too. |
 | **Blind** (`blind.jsonl`) | 55 | **Was not tuned against when written, but is now used up** (it has been used to compare models). Indicative only; see the sealed set for unseen data. |
 
-On the blind set the rules-only default caught **10%** of attacks. That is the honest number, and it is the one the READMEs lead with.
+On the blind set the rules-only default caught **10%** of attacks. That was the figure on that set. The set is now used up, so treat it as a dated, indicative number, not a current result on unseen data; the READMEs quote it with its date.
 
 ## Rules that keep the numbers honest
 
