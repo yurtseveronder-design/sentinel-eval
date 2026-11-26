@@ -28,8 +28,10 @@ Public models scored on their own, and latency, are in [docs/COMPARISON.md](docs
 * There is a trade-off, not a free win: lowering the threshold catches more but also blocks more harmless prompts
   (10-17% on the harder sets at 0.50). At 0.60 roughly half of unseen attacks are caught at a cost of a few percent
   false blocks.
-* The default (keyword) configuration catches about 1 in 10 unseen attacks. The pretrained classifier is the big step:
-  73-83% of unseen attacks, including other languages, for 2 of 25 harmless blind prompts blocked (8%). Both of those are
+* The default (keyword) configuration catches about 1 in 10 unseen attacks. A pretrained classifier is the big step. Across the four
+  classifier rows (ProtectAI and deepset, each with and without embeddings) it catches 73-97% of the blind-set attacks,
+  including other languages, and blocks 8-12% of harmless prompts: ProtectAI 73% (83% with embeddings) at 2 of 25 harmless blind
+  prompts blocked (8%); deepset 93% (97% with embeddings) at 12%. The false blocks are
   in the hard-negative groups (security discussion, instruction words). The classifier is a public pretrained model that
   sentinel-semantic loads; it was not trained or tuned here, and the threshold barely matters because it is very confident.
 * 25 harmless blind prompts means one false block is 4 points; treat 8% as roughly 2-20%.

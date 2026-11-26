@@ -19,7 +19,7 @@ Two numbers matter:
 | `data/heldout.jsonl` | 66 | Held-out when first written, but later tuned against, so treat it as a second dev set. |
 | `data/blind.jsonl` | 55 | **Blind set.** Not used to write rules, but since used to compare models, so it is **used up**: indicative, no longer a result on unseen data. |
 
-Dev-set scores are optimistic by construction. Quote the blind-set number when you describe detection quality.
+Dev-set scores are optimistic by construction. The blind set is used up, so quote its numbers only with their date and the words 'indicative, used up'.
 
 ### Dev set layout (88 prompts, 8 per category)
 
